@@ -5,7 +5,7 @@ const CONFIG = {
     SCROLL_OFFSET: 80
 };
 
-// ===== CLASSE PRINCIPAL DO PORTFÓLIO =====
+// ===== CLASSE PRINCIPAL =====
 class Portfolio {
     constructor() {
         this.init();
@@ -18,52 +18,38 @@ class Portfolio {
         this.initSmoothScrolling();
         this.initContactForm();
         this.initTypingEffect();
-        this.initParticles(); // ← PARTÍCULAS AQUI
+        this.initParticles();
     }
 
-    // ===== PARTÍCULAS DE FUNDO =====
+    // ===== PARTÍCULAS =====
     initParticles() {
         const isMobile = window.innerWidth < 768;
         const isDark = document.body.classList.contains('dark-mode');
 
         tsParticles.load("tsparticles", {
             fullScreen: { enable: false },
-
             particles: {
                 number: { value: isMobile ? 40 : 90 },
-                color: { value: isDark ? "#ffffff" : "#ff36ab" },
+                color: { value: isDark ? "#ffffff" : "#000000" },
 
                 links: {
                     enable: true,
-                    color: isDark ? "#ffffff" : "#ff36ab",
+                    color: isDark ? "#ffffff" : "#000000",
                     distance: 150,
                     opacity: 0.3
                 },
 
-                move: {
-                    enable: true,
-                    speed: 2
-                },
+                move: { enable: true, speed: 2 },
 
-                size: {
-                    value: { min: 1, max: 3 }
-                },
+                size: { value: { min: 1, max: 3 } },
 
-                opacity: {
-                    value: 0.4
-                }
+                opacity: { value: 0.4 }
             },
 
             interactivity: {
                 events: {
-                    onHover: {
-                        enable: true,
-                        mode: "repulse"
-                    },
-                    onClick: {
-                        enable: true,
-                        mode: "push"
-                    }
+                    onHover: { enable: true, mode: "repulse" },
+                    onClick: { enable: true, mode: "push" }
                 },
                 modes: {
                     repulse: { distance: 120 },
@@ -75,36 +61,55 @@ class Portfolio {
         });
     }
 
-    // ===== GERENCIAMENTO DE TEMA =====
+    // ===== TEMA (ATUALIZADO COM SWITCH) =====
     initTheme() {
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
-        const themeIcon = document.querySelector('.theme-icon');
+
+        const switchCircle = document.querySelector('.switch-circle i');
+        const switchText = document.querySelector('.switch-text');
 
         const savedTheme = localStorage.getItem(CONFIG.THEME_KEY);
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
+        // Estado inicial
         if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
             body.classList.add('dark-mode');
-            if (themeIcon) themeIcon.textContent = '☀️';
+
+            if (switchCircle) switchCircle.className = 'fas fa-moon';
+            if (switchText) switchText.textContent = 'DARK';
+        } else {
+            if (switchCircle) switchCircle.className = 'fas fa-sun';
+            if (switchText) switchText.textContent = 'LIGHT';
         }
 
         if (!themeToggle) return;
 
+        // Clique no botão
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
             const isDark = body.classList.contains('dark-mode');
 
-            if (themeIcon) themeIcon.textContent = isDark ? '🌙' : '☀️';
+            // Ícone
+            if (switchCircle) {
+                switchCircle.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+            }
+
+            // Texto
+            if (switchText) {
+                switchText.textContent = isDark ? 'DARK' : 'LIGHT';
+            }
+
+            // Salvar
             localStorage.setItem(CONFIG.THEME_KEY, isDark ? 'dark' : 'light');
 
-            // Recarrega partículas com nova cor
-            tsParticles.domItem(0).destroy();
+            // Recarregar partículas
+            tsParticles.domItem(0)?.destroy();
             this.initParticles();
         });
     }
 
-    // ===== ANIMAÇÕES DE SCROLL =====
+    // ===== ANIMAÇÕES =====
     initScrollAnimations() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -134,7 +139,7 @@ class Portfolio {
         });
     }
 
-    // ===== EFEITO DIGITAÇÃO =====
+    // ===== DIGITAÇÃO =====
     initTypingEffect() {
         const highlight = document.querySelector('.highlight');
         if (!highlight) return;
@@ -165,7 +170,7 @@ class Portfolio {
         });
     }
 
-    // ===== EVENTOS GERAIS =====
+    // ===== EVENTOS =====
     setupEventListeners() {
         window.addEventListener('resize', this.debounce(() => {
             tsParticles.domItem(0)?.destroy();
