@@ -606,6 +606,7 @@ body.dark-mode {
     height: auto !important;
     display: block !important;
     margin: 0 auto !important;
+    border-radius: 10px;
 }
 
 .project-card {
